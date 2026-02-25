@@ -9,8 +9,13 @@ jobs:
     steps:
       - name: Run Script
         run: |
-          curl -X POST 'https://api.dify.ai/v1/workflows/run' \
+          curl -X POST 'https://api.dify.ai/v1/chat-messages' \
           --header 'Authorization: Bearer ${{ secrets.DIFY_API_KEY }}' \
           --header 'Content-Type: application/json' \
-          --data-raw '{"inputs": {}, "response_mode": "blocking", "user": "GitHubAction"}'
-          
+          --data-raw '{
+            "inputs": {},
+            "query": "请开始执行定时任务",
+            "response_mode": "blocking",
+            "conversation_id": "",
+            "user": "GitHubAction"
+          }'

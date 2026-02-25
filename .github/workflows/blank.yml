@@ -1,0 +1,14 @@
+name: Dify Scheduled Task
+on:
+  schedule:
+    - cron: '33 21 * * *' # 每天早上 9 点运行 (UTC时间)
+jobs:
+  run-task:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Script
+        run: |
+          curl -X POST 'https://api.dify.ai/v1/workflows/run' \
+          --header 'Authorization: Bearer ${{ secrets.DIFY_API_KEY }}' \
+          --header 'Content-Type: application/json' \
+          --data-raw '{"inputs": {}, "response_mode": "blocking", "user": "GitHubAction"}'

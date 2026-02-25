@@ -1,21 +1,25 @@
 name: Dify Scheduled Task
 on:
   schedule:
-    - cron: '33 21 * * *' # 每天早上 9 点运行 (UTC时间)
+    - cron: '33 21 * * *' 
   workflow_dispatch:
+
 jobs:
   run-task:
     runs-on: ubuntu-latest
     steps:
-      - name: Run Script
+      - name: Trigger Agent
         run: |
+          # 使用 --max-time 设定较短的等待时间，只要 Dify 接收到请求即可
+          # 如果你的 Agent 不需要处理这张图片，建议把 files 部分删掉，减轻 API 压力
           curl -X POST 'https://api.dify.ai/v1/chat-messages' \
           --header 'Authorization: Bearer ${{ secrets.DIFY_API_KEY }}' \
           --header 'Content-Type: application/json' \
+          --connect-timeout 20 \
+          --max-time 30 \
           --data-raw '{
             "inputs": {},
-            "query": "请开始执行定时任务",
-            "response_mode": "blocking",
-            "conversation_id": "",
+            "query": "请随机输出一个领域的学习报告并发送到企业微信",
+            "response_mode": "streaming",
             "user": "GitHubAction"
-          }'
+          }' || echo "Trigger sent, ignoring timeout"
